@@ -1,53 +1,221 @@
 """Constant for Plugwise component."""
-DOMAIN = "plugwise"
 
-SENSOR_PLATFORMS = ["sensor"]
-ALL_PLATFORMS = ["binary_sensor", "climate", "sensor", "switch"]
+from homeassistant.const import (
+    DEVICE_CLASS_BATTERY,
+    DEVICE_CLASS_ILLUMINANCE,
+    DEVICE_CLASS_POWER,
+    DEVICE_CLASS_PRESSURE,
+    DEVICE_CLASS_TEMPERATURE,
+    ENERGY_KILO_WATT_HOUR,
+    ENERGY_WATT_HOUR,
+    PERCENTAGE,
+    POWER_WATT,
+    PRESSURE_BAR,
+    TEMP_CELSIUS,
+    VOLUME_CUBIC_METERS,
+)
+
+# Generic
+API = "api"
+COORDINATOR = "coordinator"
+DOMAIN = "plugwise"
+UNDO_UPDATE_LISTENER = "undo_update_listener"
+
+# Device classes
+DEVICE_CLASS_GAS = "gas"
+DEVICE_CLASS_VALVE = "valve"
 
 # Sensor mapping
+SENSOR_MAP_DEVICE_CLASS = 2
+SENSOR_MAP_ICON = 3
 SENSOR_MAP_MODEL = 0
 SENSOR_MAP_UOM = 1
-SENSOR_MAP_DEVICE_CLASS = 2
 
 # Default directives
-DEFAULT_NAME = "Smile"
-DEFAULT_USERNAME = "smile"
-DEFAULT_TIMEOUT = 10
-DEFAULT_PORT = 80
-DEFAULT_MIN_TEMP = 4
 DEFAULT_MAX_TEMP = 30
+DEFAULT_MIN_TEMP = 4
+DEFAULT_NAME = "Smile"
+DEFAULT_PORT = 80
 DEFAULT_SCAN_INTERVAL = {"thermostat": 60, "power": 10}
+DEFAULT_TIMEOUT = 10
+DEFAULT_USERNAME = "smile"
 
 # Configuration directives
-CONF_MIN_TEMP = "min_temp"
-CONF_MAX_TEMP = "max_temp"
-CONF_THERMOSTAT = "thermostat"
-CONF_POWER = "power"
-CONF_HEATER = "heater"
-CONF_SOLAR = "solar"
 CONF_GAS = "gas"
-
-ATTR_ILLUMINANCE = "illuminance"
-UNIT_LUMEN = "lm"
-
-CURRENT_HVAC_DHW = "hot_water"
-
+CONF_MAX_TEMP = "max_temp"
+CONF_MIN_TEMP = "min_temp"
+CONF_THERMOSTAT = "thermostat"
 DEVICE_STATE = "device_state"
-
 SCHEDULE_ON = "true"
 SCHEDULE_OFF = "false"
+UNIT_LUMEN = "lm"
 
+# Icons
 COOL_ICON = "mdi:snowflake"
 FLAME_ICON = "mdi:fire"
-IDLE_ICON = "mdi:circle-off-outline"
 FLOW_OFF_ICON = "mdi:water-pump-off"
 FLOW_ON_ICON = "mdi:water-pump"
+IDLE_ICON = "mdi:circle-off-outline"
+SWITCH_ICON = "mdi:electric-switch"
 
-UNDO_UPDATE_LISTENER = "undo_update_listener"
-COORDINATOR = "coordinator"
+# __init__/gateway constss:
+ALL_PLATFORMS = ["binary_sensor", "climate", "sensor", "switch"]
+SERVICE_DELETE = "delete_notification"
+SENSOR_PLATFORMS = ["sensor", "switch"]
 
+# Binary_sensor consts:
+BINARY_SENSOR_MAP = {
+    "dhw_state": ["Domestic Hot Water State", None],
+    "slave_boiler_state": ["Secondary Heater Device State", None],
+}
+
+# Climate consts:
+THERMOSTAT_CLASSES = [
+    "thermostat",
+    "zone_thermostat",
+    "thermostatic_radiator_valve",
+]
+
+# Config_flow consts:
 ZEROCONF_MAP = {
     "smile": "P1",
     "smile_thermo": "Anna",
     "smile_open_therm": "Adam",
 }
+
+# Sensor consts:
+ATTR_TEMPERATURE = ["Temperature", TEMP_CELSIUS, DEVICE_CLASS_TEMPERATURE]
+ATTR_BATTERY_LEVEL = ["Charge", PERCENTAGE, DEVICE_CLASS_BATTERY]
+ATTR_ILLUMINANCE = ["Illuminance", UNIT_LUMEN, DEVICE_CLASS_ILLUMINANCE]
+ATTR_PRESSURE = ["Pressure", PRESSURE_BAR, DEVICE_CLASS_PRESSURE]
+
+THERMOSTAT_SENSOR_MAP = {
+    "battery": ATTR_BATTERY_LEVEL,
+    "illuminance": ATTR_ILLUMINANCE,
+    "outdoor_temperature": ATTR_TEMPERATURE,
+    "setpoint": ATTR_TEMPERATURE,
+    "temperature": ATTR_TEMPERATURE,
+    "temperature_difference": ATTR_TEMPERATURE,
+    "valve_position": ["Valve Position", PERCENTAGE, None],
+}
+
+AUX_DEV_SENSOR_MAP = {
+    "intended_boiler_temperature": ATTR_TEMPERATURE,
+    "modulation_level": ["Heater Modulation Level", PERCENTAGE, None],
+    "return_temperature": ATTR_TEMPERATURE,
+    "water_pressure": ATTR_PRESSURE,
+    "water_temperature": ATTR_TEMPERATURE,
+}
+
+ENERGY_SENSOR_MAP = {
+    "electricity_consumed": [
+        "Current Consumed Power",
+        POWER_WATT,
+        DEVICE_CLASS_POWER,
+    ],
+    "electricity_produced": [
+        "Current Produced Power",
+        POWER_WATT,
+        DEVICE_CLASS_POWER,
+    ],
+    "electricity_consumed_interval": [
+        "Consumed Power Interval",
+        ENERGY_WATT_HOUR,
+        DEVICE_CLASS_POWER,
+    ],
+    "electricity_consumed_peak_interval": [
+        "Consumed Power Interval",
+        ENERGY_WATT_HOUR,
+        DEVICE_CLASS_POWER,
+    ],
+    "electricity_consumed_off_peak_interval": [
+        "Consumed Power Interval (off peak)",
+        ENERGY_WATT_HOUR,
+        DEVICE_CLASS_POWER,
+    ],
+    "electricity_produced_interval": [
+        "Produced Power Interval",
+        ENERGY_WATT_HOUR,
+        DEVICE_CLASS_POWER,
+    ],
+    "electricity_produced_peak_interval": [
+        "Produced Power Interval",
+        ENERGY_WATT_HOUR,
+        DEVICE_CLASS_POWER,
+    ],
+    "electricity_produced_off_peak_interval": [
+        "Produced Power Interval (off peak)",
+        ENERGY_WATT_HOUR,
+        DEVICE_CLASS_POWER,
+    ],
+    "electricity_consumed_off_peak_point": [
+        "Current Consumed Power (off peak)",
+        POWER_WATT,
+        DEVICE_CLASS_POWER,
+    ],
+    "electricity_consumed_peak_point": [
+        "Current Consumed Power",
+        POWER_WATT,
+        DEVICE_CLASS_POWER,
+    ],
+    "electricity_consumed_off_peak_cumulative": [
+        "Cumulative Consumed Power (off peak)",
+        ENERGY_KILO_WATT_HOUR,
+        DEVICE_CLASS_POWER,
+    ],
+    "electricity_consumed_peak_cumulative": [
+        "Cumulative Consumed Power",
+        ENERGY_KILO_WATT_HOUR,
+        DEVICE_CLASS_POWER,
+    ],
+    "electricity_produced_off_peak_point": [
+        "Current Consumed Power (off peak)",
+        POWER_WATT,
+        DEVICE_CLASS_POWER,
+    ],
+    "electricity_produced_peak_point": [
+        "Current Consumed Power",
+        POWER_WATT,
+        DEVICE_CLASS_POWER,
+    ],
+    "electricity_produced_off_peak_cumulative": [
+        "Cumulative Consumed Power (off peak)",
+        ENERGY_KILO_WATT_HOUR,
+        DEVICE_CLASS_POWER,
+    ],
+    "electricity_produced_peak_cumulative": [
+        "Cumulative Consumed Power",
+        ENERGY_KILO_WATT_HOUR,
+        DEVICE_CLASS_POWER,
+    ],
+    "gas_consumed_interval": [
+        "Current Consumed Gas",
+        VOLUME_CUBIC_METERS,
+        None,
+    ],
+    "gas_consumed_cumulative": [
+        "Cumulative Consumed Gas",
+        VOLUME_CUBIC_METERS,
+        None,
+    ],
+    "net_electricity_point": [
+        "Current net Power",
+        POWER_WATT,
+        DEVICE_CLASS_POWER,
+    ],
+    "net_electricity_cumulative": [
+        "Cumulative net Power",
+        ENERGY_KILO_WATT_HOUR,
+        DEVICE_CLASS_POWER,
+    ],
+}
+
+CUSTOM_ICONS = {
+    "gas_consumed_interval": "mdi:fire",
+    "gas_consumed_cumulative": "mdi:fire",
+    "modulation_level": "mdi:percent",
+    "valve_position": "mdi:valve",
+}
+
+# Switch consts:
+SWITCH_CLASSES = ["plug", "switch_group"]

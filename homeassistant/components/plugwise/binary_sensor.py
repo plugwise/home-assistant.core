@@ -7,6 +7,8 @@ from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import callback
 
 from .const import (
+    API,
+    BINARY_SENSOR_MAP,
     COORDINATOR,
     DOMAIN,
     FLAME_ICON,
@@ -16,17 +18,12 @@ from .const import (
 )
 from .sensor import SmileSensor
 
-BINARY_SENSOR_MAP = {
-    "dhw_state": ["Domestic Hot Water State", None],
-    "slave_boiler_state": ["Secondary Heater Device State", None],
-}
-
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile binary_sensors from a config entry."""
-    api = hass.data[DOMAIN][config_entry.entry_id]["api"]
+    api = hass.data[DOMAIN][config_entry.entry_id][API]
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities = []
@@ -74,11 +71,6 @@ class PwBinarySensor(SmileSensor, BinarySensorEntity):
         """Return true if the binary sensor is on."""
         return self._is_on
 
-    @property
-    def icon(self):
-        """Return the icon to use in the frontend."""
-        return self._icon
-
     @callback
     def _async_process_data(self):
         """Update the entity."""
@@ -95,16 +87,10 @@ class PwBinarySensor(SmileSensor, BinarySensorEntity):
 
         self._is_on = data[self._binary_sensor]
 
-        self._state = STATE_OFF
+        self._state = STATE_ON if self._is_on else STATE_OFF
         if self._binary_sensor == "dhw_state":
-            self._icon = FLOW_OFF_ICON
+            self._icon = FLOW_ON_ICON if self._is_on else FLOW_OFF_ICON
         if self._binary_sensor == "slave_boiler_state":
-            self._icon = IDLE_ICON
-        if self._is_on:
-            self._state = STATE_ON
-            if self._binary_sensor == "dhw_state":
-                self._icon = FLOW_ON_ICON
-            if self._binary_sensor == "slave_boiler_state":
-                self._icon = FLAME_ICON
+            self._icon = FLAME_ICON if self._is_on else IDLE_ICON
 
         self.async_write_ha_state()

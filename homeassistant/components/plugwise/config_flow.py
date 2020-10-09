@@ -5,12 +5,20 @@ from Plugwise_Smile.Smile import Smile
 import voluptuous as vol
 
 from homeassistant import config_entries, core, exceptions
-from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_PORT, CONF_SCAN_INTERVAL
+from homeassistant.const import (
+    CONF_BASE,
+    CONF_HOST,
+    CONF_NAME,
+    CONF_PASSWORD,
+    CONF_PORT,
+    CONF_SCAN_INTERVAL,
+)
 from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.typing import DiscoveryInfoType
 
 from .const import (  # pylint:disable=unused-import
+    API,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
@@ -89,7 +97,7 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.context["title_placeholders"] = {
             CONF_HOST: discovery_info[CONF_HOST],
             CONF_PORT: discovery_info.get(CONF_PORT, DEFAULT_PORT),
-            "name": _name,
+            CONF_NAME: _name,
         }
         return await self.async_step_user()
 
@@ -111,12 +119,12 @@ class PlugwiseConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 api = await validate_gw_input(self.hass, user_input)
 
             except CannotConnect:
-                errors["base"] = "cannot_connect"
+                errors[CONF_BASE] = "cannot_connect"
             except InvalidAuth:
-                errors["base"] = "invalid_auth"
+                errors[CONF_BASE] = "invalid_auth"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
-                errors["base"] = "unknown"
+                errors[CONF_BASE] = "unknown"
             if not errors:
                 await self.async_set_unique_id(
                     api.smile_hostname or api.gateway_id, raise_on_progress=False
@@ -158,7 +166,7 @@ class PlugwiseOptionsFlowHandler(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        api = self.hass.data[DOMAIN][self.config_entry.entry_id]["api"]
+        api = self.hass.data[DOMAIN][self.config_entry.entry_id][API]
         interval = DEFAULT_SCAN_INTERVAL[api.smile_type]
         data = {
             vol.Optional(

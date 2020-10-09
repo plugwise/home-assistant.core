@@ -19,12 +19,14 @@ from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.core import callback
 
 from .const import (
+    API,
     COORDINATOR,
     DEFAULT_MAX_TEMP,
     DEFAULT_MIN_TEMP,
     DOMAIN,
     SCHEDULE_OFF,
     SCHEDULE_ON,
+    THERMOSTAT_CLASSES,
 )
 from .gateway import SmileGateway
 
@@ -38,20 +40,15 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Smile Thermostats from a config entry."""
-    api = hass.data[DOMAIN][config_entry.entry_id]["api"]
+    api = hass.data[DOMAIN][config_entry.entry_id][API]
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     entities = []
-    thermostat_classes = [
-        "thermostat",
-        "zone_thermostat",
-        "thermostatic_radiator_valve",
-    ]
     all_devices = api.get_all_devices()
 
     for dev_id, device_properties in all_devices.items():
 
-        if device_properties["class"] not in thermostat_classes:
+        if device_properties["class"] not in THERMOSTAT_CLASSES:
             continue
 
         thermostat = PwThermostat(
@@ -85,23 +82,23 @@ class PwThermostat(SmileGateway, ClimateEntity):
         self._min_temp = min_temp
         self._max_temp = max_temp
 
-        self._selected_schema = None
+        self._compressor_state = None
+        self._cooling_state = None
+        self._dhw_state = None
+        self._heating_state = None
+        self._hvac_mode = None
         self._last_active_schema = None
-        self._preset_mode = None
         self._presets = None
         self._presets_list = None
-        self._heating_state = None
-        self._cooling_state = None
-        self._compressor_state = None
-        self._dhw_state = None
-        self._hvac_mode = None
+        self._preset_mode = None
+        self._schedule_temp = None
         self._schema_names = None
         self._schema_status = None
-        self._temperature = None
+        self._selected_schema = None
         self._setpoint = None
+        self._temperature = None
         self._water_pressure = None
-        self._schedule_temp = None
-        self._hvac_mode = None
+
         self._single_thermostat = self._api.single_master_thermostat()
         self._unique_id = f"{dev_id}-climate"
 
@@ -114,10 +111,11 @@ class PwThermostat(SmileGateway, ClimateEntity):
             if self._cooling_state:
                 return CURRENT_HVAC_COOL
             return CURRENT_HVAC_IDLE
-        if self._heating_state is not None:
-            if self._setpoint > self._temperature:
-                return CURRENT_HVAC_HEAT
-            return CURRENT_HVAC_IDLE
+
+        if self._setpoint > self._temperature:
+            return CURRENT_HVAC_HEAT
+
+        return CURRENT_HVAC_IDLE
 
     @property
     def supported_features(self):

@@ -23,6 +23,7 @@ from homeassistant.helpers.update_coordinator import (
 
 from .const import (
     ALL_PLATFORMS,
+    API,
     COORDINATOR,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
@@ -104,7 +105,7 @@ async def async_setup_entry_gw(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     undo_listener = entry.add_update_listener(_update_listener)
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
-        "api": api,
+        API: api,
         COORDINATOR: coordinator,
         UNDO_UPDATE_LISTENER: undo_listener,
     }
