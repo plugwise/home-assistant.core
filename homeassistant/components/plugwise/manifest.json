@@ -2,7 +2,7 @@
   "domain": "plugwise",
   "name": "Plugwise",
   "documentation": "https://www.home-assistant.io/integrations/plugwise",
-  "requirements": ["plugwise==0.27.3"],
+  "requirements": ["git+https://github.com/plugwise/python-plugwise.git@Typing_III#plugwise==0.27.4a0"],
   "codeowners": ["@CoMPaTech", "@bouwew", "@brefra", "@frenck"],
   "zeroconf": ["_plugwise._tcp.local."],
   "config_flow": true,
