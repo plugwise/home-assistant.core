@@ -1,9 +1,8 @@
 """DataUpdateCoordinator for Plugwise."""
 from datetime import timedelta
-from typing import NamedTuple
 
 from plugwise import Smile
-from plugwise.constants import DeviceData, GatewayData
+from plugwise.constants import PlugwiseData
 from plugwise.exceptions import (
     ConnectionFailedError,
     InvalidAuthentication,
@@ -23,14 +22,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DEFAULT_USERNAME, DOMAIN, LOGGER
 
 
-class PlugwiseData(NamedTuple):
-    """Plugwise data stored in the DataUpdateCoordinator."""
-
-    gateway: GatewayData
-    devices: dict[str, DeviceData]
-
-
-class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator[PlugwiseData]):
+class PlugwiseDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching Plugwise data from single endpoint."""
 
     _connected: bool = False
