@@ -411,15 +411,15 @@ SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
     ),
-#    PlugwiseSensorEntityDescription(
-#        key="maximum_boiler_temperature",
-#        name="Maximum boiler temperature",
-#        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-#        device_class=SensorDeviceClass.TEMPERATURE,
-#        entity_category=EntityCategory.DIAGNOSTIC,
-#        state_class=SensorStateClass.MEASUREMENT,
-#        # pw_value="intended_boiler_temperature",
-#    ),
+    PlugwiseSensorEntityDescription(
+        key="maximum_boiler_temperature",
+        name="Maximum boiler temperature",
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        device_class=SensorDeviceClass.TEMPERATURE,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        state_class=SensorStateClass.MEASUREMENT,
+        pw_value="intended_boiler_temperature",
+    ),
 )
 
 
