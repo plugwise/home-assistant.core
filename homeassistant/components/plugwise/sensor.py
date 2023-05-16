@@ -1,7 +1,8 @@
 """Plugwise Sensor component for Home Assistant."""
 from __future__ import annotations
 
-from collections.abc import Callable, Any
+from collections.abc import Callable
+from typing import Any
 from dataclasses import dataclass
 
 from plugwise import DeviceData
@@ -28,10 +29,11 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN, LOGGER
+from .const import DOMAIN
 from .coordinator import PlugwiseDataUpdateCoordinator
 from .entity import PlugwiseEntity
 from .models import PlugwiseRequiredKeysMixin, T
+
 
 
 @dataclass
@@ -39,6 +41,10 @@ class PlugwiseSensorEntityDescription(PlugwiseRequiredKeysMixin[T], SensorEntity
     """Describes Plugwise sensor entity."""
 
     state_class: str | None = SensorStateClass.MEASUREMENT
+
+    def get_pw_value(self, obj: T) -> float | int:
+        """Return value from Plugwise device."""
+        return super().get_pw_value(obj)
 
 
 SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
@@ -405,14 +411,15 @@ SENSORS: tuple[PlugwiseSensorEntityDescription, ...] = (
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
     ),
-    PlugwiseSensorEntityDescription(
-        key="maximum_boiler_temperature",
-        name="Maximum boiler temperature",
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-        device_class=SensorDeviceClass.TEMPERATURE,
-        entity_category=EntityCategory.DIAGNOSTIC,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
+#    PlugwiseSensorEntityDescription(
+#        key="maximum_boiler_temperature",
+#        name="Maximum boiler temperature",
+#        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+#        device_class=SensorDeviceClass.TEMPERATURE,
+#        entity_category=EntityCategory.DIAGNOSTIC,
+#        state_class=SensorStateClass.MEASUREMENT,
+#        # pw_value="intended_boiler_temperature",
+#    ),
 )
 
 
@@ -458,10 +465,8 @@ class PlugwiseSensorEntity(PlugwiseEntity, SensorEntity):
         super().__init__(coordinator, device_id)
         self.entity_description = description
         self._attr_unique_id = f"{device_id}-{description.key}"
-        LOGGER.info("HOI initting sensor")
 
     @property
     def native_value(self) -> int | float | None:
         """Return the value reported by the sensor."""
-        LOGGER.info("HOI calling with %s", self.device["sensors"])
         return self.entity_description.get_pw_value(self.device["sensors"])
