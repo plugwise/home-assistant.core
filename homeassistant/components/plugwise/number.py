@@ -45,11 +45,11 @@ NUMBER_TYPES = (
         command=lambda api, number, value: api.set_number_setpoint(number, value),
         device_class=NumberDeviceClass.TEMPERATURE,
         entity_category=EntityCategory.CONFIG,
-        native_max_value_fn=lambda data: data["maximum_boiler_temperature"]["upper_bound"],  # type: ignore [index]
-        native_min_value_fn=lambda data: data["maximum_boiler_temperature"]["lower_bound"],  # type: ignore [index]
-        native_step_key_fn=lambda data: data["maximum_boiler_temperature"]["resolution"],  # type: ignore [index]
+        native_max_value_fn=lambda data: data["maximum_boiler_temperature"]["upper_bound"],
+        native_min_value_fn=lambda data: data["maximum_boiler_temperature"]["lower_bound"],
+        native_step_key_fn=lambda data: data["maximum_boiler_temperature"]["resolution"],
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-        native_value_fn=lambda data: data["maximum_boiler_temperature"]["setpoint"],  # type: ignore [index]
+        native_value_fn=lambda data: data["maximum_boiler_temperature"]["setpoint"],
     ),
     # Placeholder new max_dhw_temperature entity
 )
@@ -69,7 +69,7 @@ async def async_setup_entry(
     entities: list[PlugwiseNumberEntity] = []
     for device_id, device in coordinator.data.devices.items():
         for description in NUMBER_TYPES:
-            if description.key in device and "setpoint" in device[description.key]:  # type: ignore [literal-required]
+            if description.key in device and "setpoint" in device[description.key]:
                 entities.append(
                     PlugwiseNumberEntity(coordinator, device_id, description)
                 )
