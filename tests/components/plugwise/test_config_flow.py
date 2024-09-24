@@ -123,7 +123,6 @@ async def test_form(
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: TEST_USERNAME,
-        PW_TYPE: API,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
@@ -168,7 +167,6 @@ async def test_zeroconf_flow(
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: TEST_USERNAME,
-        PW_TYPE: API,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
@@ -204,7 +202,6 @@ async def test_zeroconf_flow_stretch(
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: TEST_USERNAME2,
-        PW_TYPE: API,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
@@ -308,7 +305,6 @@ async def test_flow_errors(
         CONF_PASSWORD: TEST_PASSWORD,
         CONF_PORT: DEFAULT_PORT,
         CONF_USERNAME: TEST_USERNAME,
-        PW_TYPE: API,
     }
 
     assert len(mock_setup_entry.mock_calls) == 1
